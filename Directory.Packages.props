@@ -5,7 +5,7 @@
 <ItemGroup>
 <!-- Application Dependencies -->
 <!-- Justification: Core CQRS implementation for state-mutating commands and queries -->
-<PackageVersion Include="MediatR" Version="12.2.0" />
+<PackageVersion Include="MediatR" Version="14.1.0" />
 <!-- Justification: Pre-execution validation for structural command integrity -->
 <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
 <!-- Infrastructure Dependencies -->

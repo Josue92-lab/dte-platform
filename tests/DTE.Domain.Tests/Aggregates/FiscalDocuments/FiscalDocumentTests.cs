@@ -120,4 +120,247 @@ public class FiscalDocumentTests
         result.IsFailure.Should().BeTrue();
         result.Error.Code.Should().Be("FiscalDocument.IssuerNull");
     }
+
+    [Fact]
+    public void AddLine_ShouldRecalculateTotalsCorrectly()
+    {
+        var document = CreateValidDocument();
+
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Item 1",
+            Money.Create(10m).Value, Money.Create(0m).Value,
+            Money.Create(5m).Value, Money.Create(0m).Value, Money.Create(10m).Value, Money.Create(1.3m).Value);
+
+        document.AddLine(
+            Quantity.Create(2m).Value, 59, "Item 2",
+            Money.Create(20m).Value, Money.Create(5m).Value,
+            Money.Create(0m).Value, Money.Create(10m).Value, Money.Create(35m).Value, Money.Create(4.55m).Value);
+
+        document.Lines.Should().HaveCount(2);
+
+        document.Totals.TotalNonTaxable.Amount.Should().Be(5m);
+        document.Totals.TotalExempt.Amount.Should().Be(10m);
+        document.Totals.TotalTaxable.Amount.Should().Be(45m);
+        document.Totals.SubTotalSales.Amount.Should().Be(60m);
+        document.Totals.TotalDiscount.Amount.Should().Be(5m);
+        document.Totals.TotalTax.Amount.Should().Be(5.85m);
+        document.Totals.TotalToPay.Amount.Should().Be(60.85m); // 60 + 5.85 - 5
+    }
+
+    [Fact]
+    public void RemoveLine_ShouldResequenceNumItemAndRecalculateTotals()
+    {
+        var document = CreateValidDocument();
+
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Item 1", Money.Zero, Money.Zero, Money.Create(10m).Value, Money.Zero, Money.Zero, Money.Zero);
+
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Item 2", Money.Zero, Money.Zero, Money.Create(20m).Value, Money.Zero, Money.Zero, Money.Zero);
+
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Item 3", Money.Zero, Money.Zero, Money.Create(30m).Value, Money.Zero, Money.Zero, Money.Zero);
+
+        document.RemoveLine(2);
+
+        document.Lines.Should().HaveCount(2);
+
+        var lines = document.Lines.ToList();
+        lines[0].NumItem.Should().Be(1);
+        lines[0].Description.Should().Be("Item 1");
+
+        lines[1].NumItem.Should().Be(2);
+        lines[1].Description.Should().Be("Item 3");
+
+        document.Totals.TotalNonTaxable.Amount.Should().Be(40m); // 10 + 30
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenDescriptionIsInvalid()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(
+            Quantity.Create(1m).Value, 59, "", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.DescriptionInvalidLength");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenLimitExceeded()
+    {
+        var document = CreateValidDocument();
+
+        for (int i = 0; i < 2000; i++)
+        {
+            document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero).IsSuccess.Should().BeTrue();
+        }
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item 2001", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("FiscalDocument.LineLimitExceeded");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenQuantityIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(null!, 59, "Item", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.QuantityNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenUnitPriceIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", null!, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.UnitPriceNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenDiscountAmountIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, null!, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.DiscountAmountNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenNonTaxableAmountIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, Money.Zero, null!, Money.Zero, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.NonTaxableAmountNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenExemptAmountIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, Money.Zero, Money.Zero, null!, Money.Zero, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.ExemptAmountNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenTaxableAmountIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, Money.Zero, Money.Zero, Money.Zero, null!, Money.Zero);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.TaxableAmountNull");
+    }
+
+    [Fact]
+    public void AddLine_ShouldReturnFailure_WhenTaxAmountIsNull()
+    {
+        var document = CreateValidDocument();
+
+        var result = document.AddLine(Quantity.Create(1m).Value, 59, "Item", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, null!);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("DocumentLine.TaxAmountNull");
+    }
+
+    [Fact]
+    public void RemoveLine_ShouldReturnFailure_WhenNumItemDoesNotExist()
+    {
+        var document = CreateValidDocument();
+        document.AddLine(Quantity.Create(1m).Value, 59, "Item 1", Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero, Money.Zero);
+
+        var result = document.RemoveLine(999);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("FiscalDocument.LineNotFound");
+    }
+
+    [Fact]
+    public void Totals_ShouldPreserveNegativeTotalToPay_WhenDiscountExceedsSubTotal()
+    {
+        var document = CreateValidDocument();
+
+        // Line with discount larger than taxable amount: SubTotal=10, Tax=0, Discount=25 → TotalToPay = 10 + 0 - 25 = -15
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Discounted item",
+            Money.Create(10m).Value, Money.Create(25m).Value,
+            Money.Zero, Money.Zero, Money.Create(10m).Value, Money.Zero);
+
+        document.Totals.SubTotalSales.Amount.Should().Be(10m);
+        document.Totals.TotalDiscount.Amount.Should().Be(25m);
+        document.Totals.TotalToPay.Amount.Should().Be(-15m);
+    }
+
+    [Fact]
+    public void Totals_ShouldResetToZero_WhenAllLinesRemoved()
+    {
+        var document = CreateValidDocument();
+
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Item", Money.Create(100m).Value, Money.Zero,
+            Money.Zero, Money.Zero, Money.Create(100m).Value, Money.Create(13m).Value);
+
+        document.RemoveLine(1);
+
+        document.Lines.Should().HaveCount(0);
+        document.Totals.Should().Be(DocumentTotals.Zero);
+    }
+
+    [Fact]
+    public void Totals_ShouldDeriveCorrectly_WithMixedTaxCategories()
+    {
+        var document = CreateValidDocument();
+
+        // Line 1: Exempt only
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Exempt item",
+            Money.Create(50m).Value, Money.Zero,
+            Money.Zero, Money.Create(50m).Value, Money.Zero, Money.Zero);
+
+        // Line 2: Taxable only
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Taxable item",
+            Money.Create(100m).Value, Money.Zero,
+            Money.Zero, Money.Zero, Money.Create(100m).Value, Money.Create(13m).Value);
+
+        // Line 3: Non-taxable only
+        document.AddLine(
+            Quantity.Create(1m).Value, 59, "Non-taxable item",
+            Money.Create(30m).Value, Money.Zero,
+            Money.Create(30m).Value, Money.Zero, Money.Zero, Money.Zero);
+
+        document.Totals.TotalNonTaxable.Amount.Should().Be(30m);
+        document.Totals.TotalExempt.Amount.Should().Be(50m);
+        document.Totals.TotalTaxable.Amount.Should().Be(100m);
+        document.Totals.SubTotalSales.Amount.Should().Be(180m);
+        document.Totals.TotalDiscount.Amount.Should().Be(0m);
+        document.Totals.TotalTax.Amount.Should().Be(13m);
+        document.Totals.TotalToPay.Amount.Should().Be(193m); // 180 + 13 - 0
+    }
+
+    private static FiscalDocument CreateValidDocument()
+    {
+        return FiscalDocument.Create(
+            DocumentId.New(), DteType.FacturaElectronica, 2, EnvironmentType.Test, OperationType.Normal,
+            DateOnly.FromDateTime(DateTime.UtcNow), TimeOnly.FromDateTime(DateTime.UtcNow),
+            ValidIssuer(), null, DateTime.UtcNow).Value;
+    }
 }
+

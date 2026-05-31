@@ -28,9 +28,23 @@ public sealed class Money : ValueObject
         return Result.Success(new Money(amount, currency));
     }
 
+    public static readonly Money Zero = new(0m, "USD");
+
     public override IEnumerable<object> GetAtomicValues()
     {
         yield return Amount;
         yield return Currency;
+    }
+
+    public static Money operator +(Money a, Money b)
+    {
+        if (a.Currency != b.Currency) throw new InvalidOperationException("Currencies must match.");
+        return new Money(a.Amount + b.Amount, a.Currency);
+    }
+
+    public static Money operator -(Money a, Money b)
+    {
+        if (a.Currency != b.Currency) throw new InvalidOperationException("Currencies must match.");
+        return new Money(a.Amount - b.Amount, a.Currency);
     }
 }

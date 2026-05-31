@@ -12,7 +12,7 @@
 <!-- Justification: Core persistence engine -->
 <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
 <!-- Justification: Core persistence engine design-time tools for migrations -->
-<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4" />
+<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.16" />
 <!-- Justification: PostgreSQL provider, required for JSONB and BYTEA support -->
 <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
 <!-- Justification: Background processing queue backed by PostgreSQL -->

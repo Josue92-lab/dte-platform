@@ -11,19 +11,43 @@ public sealed class FiscalDocument : AggregateRoot
     public FiscalDocumentStatus Status { get; private set; }
     public ControlNumber? ControlNumber { get; private set; }
     public GenerationCode? GenerationCode { get; private set; }
+    
+    public int DocumentVersion { get; private set; }
+    public EnvironmentType EnvironmentType { get; private set; }
+    public OperationType OperationType { get; private set; }
+    public DateOnly IssueDate { get; private set; }
+    public TimeOnly IssueTime { get; private set; }
 
     private FiscalDocument(
         Guid id,
         DocumentId documentId,
-        DteType dteType) 
+        DteType dteType,
+        int documentVersion,
+        EnvironmentType environmentType,
+        OperationType operationType,
+        DateOnly issueDate,
+        TimeOnly issueTime) 
         : base(id)
     {
         DocumentId = documentId;
         DteType = dteType;
         Status = FiscalDocumentStatus.Draft;
+        DocumentVersion = documentVersion;
+        EnvironmentType = environmentType;
+        OperationType = operationType;
+        IssueDate = issueDate;
+        IssueTime = issueTime;
     }
 
-    public static Result<FiscalDocument> Create(DocumentId documentId, DteType dteType, DateTime createdOnUtc)
+    public static Result<FiscalDocument> Create(
+        DocumentId documentId, 
+        DteType dteType, 
+        int documentVersion,
+        EnvironmentType environmentType,
+        OperationType operationType,
+        DateOnly issueDate,
+        TimeOnly issueTime,
+        DateTime createdOnUtc)
     {
         if (documentId is null)
         {
@@ -35,10 +59,21 @@ public sealed class FiscalDocument : AggregateRoot
             return Result.Failure<FiscalDocument>(new Error("FiscalDocument.DteTypeNull", "DteType is required."));
         }
 
+        // According to MH Schema, DocumentVersion is required and typically 1, 2, 3, etc.
+        if (documentVersion <= 0)
+        {
+            return Result.Failure<FiscalDocument>(new Error("FiscalDocument.InvalidDocumentVersion", "DocumentVersion must be greater than zero."));
+        }
+
         var document = new FiscalDocument(
             documentId.Value,
             documentId,
-            dteType);
+            dteType,
+            documentVersion,
+            environmentType,
+            operationType,
+            issueDate,
+            issueTime);
 
         document.CreatedAtUtc = createdOnUtc;
 
@@ -46,7 +81,12 @@ public sealed class FiscalDocument : AggregateRoot
             Guid.NewGuid(),
             createdOnUtc,
             documentId,
-            dteType));
+            dteType,
+            documentVersion,
+            environmentType,
+            operationType,
+            issueDate,
+            issueTime));
 
         return Result.Success(document);
     }

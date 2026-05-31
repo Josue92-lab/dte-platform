@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public sealed class EmailAddress : ValueObject
 {
-    private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex _emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public string Value { get; }
 
@@ -21,7 +21,7 @@ public sealed class EmailAddress : ValueObject
             return Result.Failure<EmailAddress>(new Error("EmailAddress.Empty", "Email address cannot be empty."));
         }
 
-        if (!EmailRegex.IsMatch(value))
+        if (!_emailRegex.IsMatch(value))
         {
             return Result.Failure<EmailAddress>(new Error("EmailAddress.InvalidFormat", "Email address format is invalid."));
         }

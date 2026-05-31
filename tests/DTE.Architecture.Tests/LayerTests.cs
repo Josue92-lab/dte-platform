@@ -6,19 +6,19 @@ namespace DTE.Architecture.Tests;
 
 public class LayerTests
 {
-    private const string DomainNamespace = "DTE.Domain";
-    private const string ApplicationNamespace = "DTE.Application";
-    private const string InfrastructureNamespace = "DTE.Infrastructure";
-    private const string ApiNamespace = "DTE.Api";
+    private const string _domainNamespace = "DTE.Domain";
+    private const string _applicationNamespace = "DTE.Application";
+    private const string _infrastructureNamespace = "DTE.Infrastructure";
+    private const string _apiNamespace = "DTE.Api";
 
     [Fact]
     public void Domain_Should_Not_Have_Dependencies_On_Other_Layers()
     {
         var result = Types.InCurrentDomain()
             .That()
-            .ResideInNamespace(DomainNamespace)
+            .ResideInNamespace(_domainNamespace)
             .ShouldNot()
-            .HaveDependencyOnAny(ApplicationNamespace, InfrastructureNamespace, ApiNamespace)
+            .HaveDependencyOnAny(_applicationNamespace, _infrastructureNamespace, _apiNamespace)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue();
@@ -29,9 +29,9 @@ public class LayerTests
     {
         var result = Types.InCurrentDomain()
             .That()
-            .ResideInNamespace(ApplicationNamespace)
+            .ResideInNamespace(_applicationNamespace)
             .ShouldNot()
-            .HaveDependencyOnAny(InfrastructureNamespace, ApiNamespace)
+            .HaveDependencyOnAny(_infrastructureNamespace, _apiNamespace)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue();
@@ -42,9 +42,9 @@ public class LayerTests
     {
         var result = Types.InCurrentDomain()
             .That()
-            .ResideInNamespace(InfrastructureNamespace)
+            .ResideInNamespace(_infrastructureNamespace)
             .ShouldNot()
-            .HaveDependencyOn(ApiNamespace)
+            .HaveDependencyOn(_apiNamespace)
             .GetResult();
 
         result.IsSuccessful.Should().BeTrue();

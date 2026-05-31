@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public sealed class ControlNumber : ValueObject
 {
-    private static readonly Regex FormatRegex = new(@"^DTE-\d{2}-[A-Z0-9]{8}-\d{15}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex _formatRegex = new(@"^DTE-\d{2}-[A-Z0-9]{8}-\d{15}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public string Value { get; }
 
@@ -21,7 +21,7 @@ public sealed class ControlNumber : ValueObject
             return Result.Failure<ControlNumber>(new Error("ControlNumber.Empty", "Control number cannot be empty."));
         }
 
-        if (!FormatRegex.IsMatch(value))
+        if (!_formatRegex.IsMatch(value))
         {
             return Result.Failure<ControlNumber>(new Error("ControlNumber.InvalidFormat", "Control number format is invalid."));
         }

@@ -53,7 +53,7 @@ public sealed class ControlNumberSeries : AggregateRoot
     public Result<ControlNumber> AllocateNext()
     {
         var correlativeToAllocate = NextCorrelative;
-        var formattedCorrelative = correlativeToAllocate.ToString("D15");
+        var formattedCorrelative = correlativeToAllocate.ToString("D15", System.Globalization.CultureInfo.InvariantCulture);
         
         // Example: DTE-01-M001P001-000000000000001
         var controlNumberValue = $"DTE-{DteType.Code}-{EstablishmentCode}{PosCode}-{formattedCorrelative}";

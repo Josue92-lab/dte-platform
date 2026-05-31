@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public sealed class PhoneNumber : ValueObject
 {
-    private static readonly Regex PhoneRegex = new(@"^\+?[0-9\s\-]{6,20}$", RegexOptions.Compiled);
+    private static readonly Regex _phoneRegex = new(@"^\+?[0-9\s\-]{6,20}$", RegexOptions.Compiled);
 
     public string Value { get; }
 
@@ -21,7 +21,7 @@ public sealed class PhoneNumber : ValueObject
             return Result.Failure<PhoneNumber>(new Error("PhoneNumber.Empty", "Phone number cannot be empty."));
         }
 
-        if (!PhoneRegex.IsMatch(value))
+        if (!_phoneRegex.IsMatch(value))
         {
             return Result.Failure<PhoneNumber>(new Error("PhoneNumber.InvalidFormat", "Phone number format is invalid."));
         }

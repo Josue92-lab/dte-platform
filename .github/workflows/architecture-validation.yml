@@ -6,12 +6,22 @@ jobs:
   enforce-boundaries:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-    - name: Build Architecture Tests
-      run: dotnet build tests/DTE.Architecture.Tests -c Release
+        cache: true
+        cache-dependency-path: '**/packages.lock.json'
+    - name: Restore dependencies
+      run: dotnet restore DtePlatform.sln
+    - name: Build Solution
+      run: dotnet build DtePlatform.sln --no-restore -c Release
     - name: Run Layer Boundaries Validation
-      run: dotnet test tests/DTE.Architecture.Tests -c Release
+      run: dotnet test tests/DTE.Architecture.Tests --no-build -c Release --logger "console;verbosity=detailed" --logger "trx;LogFileName=architecture-results.trx"
+    - name: Upload Test Results
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: architecture-test-results
+        path: '**/TestResults/architecture-results.trx'

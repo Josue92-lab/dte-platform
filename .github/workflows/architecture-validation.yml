@@ -11,17 +11,16 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-        cache: true
-        cache-dependency-path: '**/packages.lock.json'
     - name: Restore dependencies
       run: dotnet restore DtePlatform.sln
     - name: Build Solution
       run: dotnet build DtePlatform.sln --no-restore -c Release
     - name: Run Layer Boundaries Validation
-      run: dotnet test tests/DTE.Architecture.Tests --no-build -c Release --logger "console;verbosity=detailed" --logger "trx;LogFileName=architecture-results.trx"
+      run: dotnet test tests/DTE.Architecture.Tests --no-build -c Release --logger "console;verbosity=detailed" --logger "trx;LogFileName=architecture-results.trx" --results-directory ./TestResults
     - name: Upload Test Results
-      if: failure()
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: architecture-test-results
-        path: '**/TestResults/architecture-results.trx'
+        path: './TestResults/architecture-results.trx'
+        if-no-files-found: ignore

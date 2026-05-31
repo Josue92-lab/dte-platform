@@ -11,8 +11,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-        cache: true
-        cache-dependency-path: '**/packages.lock.json'
     - name: Verify Formatting (.editorconfig)
       run: dotnet format --verify-no-changes
     - name: Restore dependencies
@@ -24,7 +22,9 @@ jobs:
     - name: Run Full Test Suite
       run: dotnet test DtePlatform.sln --no-build -c Release --collect:"XPlat Code Coverage"
     - name: Upload Coverage Results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: code-coverage
         path: '**/TestResults/*/coverage.cobertura.xml'
+        if-no-files-found: ignore

@@ -11,7 +11,7 @@ public sealed class ControlNumberSeries : AggregateRoot
     public string PosCode { get; private set; }
     public ulong NextCorrelative { get; private set; }
 
-    private ControlNumberSeries(Guid id, DteType dteType, string establishmentCode, string posCode, ulong nextCorrelative) 
+    private ControlNumberSeries(Guid id, DteType dteType, string establishmentCode, string posCode, ulong nextCorrelative)
         : base(id)
     {
         DteType = dteType;
@@ -44,9 +44,9 @@ public sealed class ControlNumberSeries : AggregateRoot
         }
 
         var series = new ControlNumberSeries(Guid.NewGuid(), dteType, establishmentCode, posCode, 1);
-        
+
         series.RaiseDomainEvent(new ControlNumberSeriesCreated(Guid.NewGuid(), DateTime.UtcNow, series.Id, dteType));
-        
+
         return Result.Success(series);
     }
 
@@ -54,10 +54,10 @@ public sealed class ControlNumberSeries : AggregateRoot
     {
         var correlativeToAllocate = NextCorrelative;
         var formattedCorrelative = correlativeToAllocate.ToString("D15", System.Globalization.CultureInfo.InvariantCulture);
-        
+
         // Example: DTE-01-M001P001-000000000000001
         var controlNumberValue = $"DTE-{DteType.Code}-{EstablishmentCode}{PosCode}-{formattedCorrelative}";
-        
+
         var controlNumberResult = ControlNumber.Create(controlNumberValue);
         if (controlNumberResult.IsFailure)
         {

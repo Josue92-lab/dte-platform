@@ -19,7 +19,7 @@ public class FiscalDocumentTests
         var result = FiscalDocument.Create(documentId, dteType, 2, EnvironmentType.Test, OperationType.Normal, issueDate, issueTime, now);
 
         result.IsSuccess.Should().BeTrue();
-        
+
         var document = result.Value;
         document.DocumentId.Should().Be(documentId);
         document.DteType.Should().Be(dteType);

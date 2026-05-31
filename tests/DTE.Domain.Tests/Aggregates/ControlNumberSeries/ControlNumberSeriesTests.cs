@@ -14,7 +14,7 @@ public class ControlNumberSeriesTests
         var result = ControlNumberSeries.Create(dteType, "M001", "P001");
 
         result.IsSuccess.Should().BeTrue();
-        
+
         var series = result.Value;
         series.DteType.Should().Be(dteType);
         series.EstablishmentCode.Should().Be("M001");

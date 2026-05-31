@@ -11,12 +11,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Database") 
+        var connectionString = configuration.GetConnectionString("Database")
             ?? throw new InvalidOperationException("Database connection string is missing.");
-            
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
-            
+
         services.AddHangfire(config => config
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
@@ -25,9 +25,9 @@ public static class DependencyInjection
             {
                 options.UseNpgsqlConnection(connectionString);
             }));
-            
+
         services.AddHangfireServer();
-        
+
         return services;
     }
 }

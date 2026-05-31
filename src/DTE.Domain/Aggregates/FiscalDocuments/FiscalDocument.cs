@@ -11,7 +11,7 @@ public sealed class FiscalDocument : AggregateRoot
     public FiscalDocumentStatus Status { get; private set; }
     public ControlNumber? ControlNumber { get; private set; }
     public GenerationCode? GenerationCode { get; private set; }
-    
+
     public int DocumentVersion { get; private set; }
     public EnvironmentType EnvironmentType { get; private set; }
     public OperationType OperationType { get; private set; }
@@ -26,7 +26,7 @@ public sealed class FiscalDocument : AggregateRoot
         EnvironmentType environmentType,
         OperationType operationType,
         DateOnly issueDate,
-        TimeOnly issueTime) 
+        TimeOnly issueTime)
         : base(id)
     {
         DocumentId = documentId;
@@ -40,8 +40,8 @@ public sealed class FiscalDocument : AggregateRoot
     }
 
     public static Result<FiscalDocument> Create(
-        DocumentId documentId, 
-        DteType dteType, 
+        DocumentId documentId,
+        DteType dteType,
         int documentVersion,
         EnvironmentType environmentType,
         OperationType operationType,

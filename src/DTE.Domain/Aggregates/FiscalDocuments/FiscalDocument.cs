@@ -18,6 +18,9 @@ public sealed class FiscalDocument : AggregateRoot
     public DateOnly IssueDate { get; private set; }
     public TimeOnly IssueTime { get; private set; }
 
+    public IssuerSnapshot Issuer { get; private set; }
+    public RecipientSnapshot? Recipient { get; private set; }
+
     private FiscalDocument(
         Guid id,
         DocumentId documentId,
@@ -26,7 +29,9 @@ public sealed class FiscalDocument : AggregateRoot
         EnvironmentType environmentType,
         OperationType operationType,
         DateOnly issueDate,
-        TimeOnly issueTime)
+        TimeOnly issueTime,
+        IssuerSnapshot issuer,
+        RecipientSnapshot? recipient)
         : base(id)
     {
         DocumentId = documentId;
@@ -37,6 +42,8 @@ public sealed class FiscalDocument : AggregateRoot
         OperationType = operationType;
         IssueDate = issueDate;
         IssueTime = issueTime;
+        Issuer = issuer;
+        Recipient = recipient;
     }
 
     public static Result<FiscalDocument> Create(
@@ -47,6 +54,8 @@ public sealed class FiscalDocument : AggregateRoot
         OperationType operationType,
         DateOnly issueDate,
         TimeOnly issueTime,
+        IssuerSnapshot issuer,
+        RecipientSnapshot? recipient,
         DateTime createdOnUtc)
     {
         if (documentId is null)
@@ -65,6 +74,11 @@ public sealed class FiscalDocument : AggregateRoot
             return Result.Failure<FiscalDocument>(new Error("FiscalDocument.InvalidDocumentVersion", "DocumentVersion must be greater than zero."));
         }
 
+        if (issuer is null)
+        {
+            return Result.Failure<FiscalDocument>(new Error("FiscalDocument.IssuerNull", "Issuer is required."));
+        }
+
         var document = new FiscalDocument(
             documentId.Value,
             documentId,
@@ -73,7 +87,9 @@ public sealed class FiscalDocument : AggregateRoot
             environmentType,
             operationType,
             issueDate,
-            issueTime);
+            issueTime,
+            issuer,
+            recipient);
 
         document.CreatedAtUtc = createdOnUtc;
 
@@ -86,7 +102,9 @@ public sealed class FiscalDocument : AggregateRoot
             environmentType,
             operationType,
             issueDate,
-            issueTime));
+            issueTime,
+            issuer,
+            recipient));
 
         return Result.Success(document);
     }

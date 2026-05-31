@@ -13,4 +13,6 @@ public sealed record FiscalDocumentCreated(
     EnvironmentType EnvironmentType,
     OperationType OperationType,
     DateOnly IssueDate,
-    TimeOnly IssueTime) : DomainEvent(Id, OccurredOnUtc);
+    TimeOnly IssueTime,
+    IssuerSnapshot Issuer,
+    RecipientSnapshot? Recipient) : DomainEvent(Id, OccurredOnUtc);

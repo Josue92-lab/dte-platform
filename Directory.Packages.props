@@ -24,8 +24,8 @@
 <!-- Justification: Stateless JWT authentication handling -->
 <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
 <!-- Testing Dependencies -->
-<!-- Justification: xUnit is the industry standard .NET test runner -->
-<PackageVersion Include="xUnit" Version="2.7.0" />
+<!-- Justification: xunit is the industry standard .NET test runner -->
+<PackageVersion Include="xunit" Version="2.7.0" />
 <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
 <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 <!-- Justification: Explicit, readable assertion syntax -->

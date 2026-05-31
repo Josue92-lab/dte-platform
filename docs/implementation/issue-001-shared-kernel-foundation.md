@@ -46,7 +46,7 @@ Implementation of foundational domain abstractions:
 The implementation successfully established the `DTE.Domain` foundational primitives. `Entity` and `ValueObject` implement explicit equality logic according to DDD principles. `AggregateRoot` exposes functionality to encapsulate and manage `DomainEvent` instances. The `Result` and `Error` classes provide a robust framework for handling application flow without exceptions. All code complies with strict nullable reference types and generated no warnings.
 
 ## Testing Summary
-A complete suite of unit tests was implemented in `DTE.Domain.Tests` using xUnit and FluentAssertions. Tests cover equality scenarios for Entities and ValueObjects, DomainEvent handling within AggregateRoots, and structural verifications for Results and Errors.
+A complete suite of unit tests was implemented in `DTE.Domain.Tests` using xunit and FluentAssertions. Tests cover equality scenarios for Entities and ValueObjects, DomainEvent handling within AggregateRoots, and structural verifications for Results and Errors.
 
 ## Follow-up Issues
 - **Issue #002**: Implementation of `FiscalDocument` and core business aggregates using the primitives defined here.

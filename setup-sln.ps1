@@ -121,7 +121,7 @@ Set-Content $apiPath @"
 
 $testBase = @"
   <ItemGroup>
-    <PackageReference Include="xUnit" />
+    <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

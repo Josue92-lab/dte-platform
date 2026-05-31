@@ -1,5 +1,4 @@
-using DTE.Domain.Aggregates.ControlNumberSeries;
-using ControlNumberSeries = DTE.Domain.Aggregates.ControlNumberSeries.ControlNumberSeries;
+using ControlNumberSeriesAggregate = global::DTE.Domain.Aggregates.ControlNumberSeries.ControlNumberSeries;
 using DTE.Domain.Events;
 using DTE.Domain.ValueObjects;
 using FluentAssertions;
@@ -12,7 +11,7 @@ public class ControlNumberSeriesTests
     public void Create_ShouldReturnSuccess_WhenValid()
     {
         var dteType = DteType.FacturaElectronica;
-        var result = ControlNumberSeries.Create(dteType, "M001", "P001");
+        var result = ControlNumberSeriesAggregate.Create(dteType, "M001", "P001");
 
         result.IsSuccess.Should().BeTrue();
 
@@ -31,7 +30,7 @@ public class ControlNumberSeriesTests
     public void Create_ShouldReturnFailure_WhenEstablishmentAndPosCodeLengthIsInvalid()
     {
         var dteType = DteType.FacturaElectronica;
-        var result = ControlNumberSeries.Create(dteType, "M01", "P01"); // Length is 6
+        var result = ControlNumberSeriesAggregate.Create(dteType, "M01", "P01"); // Length is 6
 
         result.IsFailure.Should().BeTrue();
         result.Error.Code.Should().Be("ControlNumberSeries.InvalidScopeLength");
@@ -41,7 +40,7 @@ public class ControlNumberSeriesTests
     public void AllocateNext_ShouldIncrementCorrelativeAndReturnValidControlNumber()
     {
         var dteType = DteType.FacturaElectronica;
-        var series = ControlNumberSeries.Create(dteType, "M001", "P001").Value;
+        var series = ControlNumberSeriesAggregate.Create(dteType, "M001", "P001").Value;
 
         series.ClearDomainEvents(); // Clear creation event
 

@@ -10,7 +10,7 @@
 <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
 <!-- Infrastructure Dependencies -->
 <!-- Justification: Core persistence engine -->
-<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
 <!-- Justification: Core persistence engine design-time tools for migrations -->
 <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4" />
 <!-- Justification: PostgreSQL provider, required for JSONB and BYTEA support -->

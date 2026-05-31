@@ -17,7 +17,7 @@
 <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
 <!-- Justification: Background processing queue backed by PostgreSQL -->
 <PackageVersion Include="Hangfire.PostgreSql" Version="1.20.8" />
-<PackageVersion Include="Hangfire.AspNetCore" Version="1.8.12" />
+<PackageVersion Include="Hangfire.AspNetCore" Version="1.8.23" />
 <!-- API Dependencies -->
 <!-- Justification: Structured JSON logging to filesystem/stdout -->
 <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />

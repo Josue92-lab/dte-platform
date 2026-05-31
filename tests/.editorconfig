@@ -1,0 +1,4 @@
+[*.cs]
+# Suppress CA1707 (Identifiers should not contain underscores) in test projects
+# to allow standard test naming conventions like Method_Should_When.
+dotnet_diagnostic.CA1707.severity = none

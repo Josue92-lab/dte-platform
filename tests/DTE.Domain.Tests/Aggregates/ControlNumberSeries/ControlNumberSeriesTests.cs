@@ -1,4 +1,5 @@
 using DTE.Domain.Aggregates.ControlNumberSeries;
+using ControlNumberSeries = DTE.Domain.Aggregates.ControlNumberSeries.ControlNumberSeries;
 using DTE.Domain.Events;
 using DTE.Domain.ValueObjects;
 using FluentAssertions;

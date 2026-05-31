@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile
+    container_name: dte_api_prod
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DTE__Database__ConnectionString=Host=postgres;Database=dte_platform;Username=dte_user;Password=${DTE_DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dte_network
+  postgres:
+    image: postgres:15-alpine
+    container_name: dte_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: dte_user
+      POSTGRES_PASSWORD: ${DTE_DB_PASSWORD}
+      POSTGRES_DB: dte_platform
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dte_user -d dte_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dte_network
+volumes:
+  postgres_prod_data:
+networks:
+  dte_network:
+    driver: bridge

@@ -1,0 +1,17 @@
+name: Architecture Enforcement
+on:
+  push:
+    branches: [ "**" ]
+jobs:
+  enforce-boundaries:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    - name: Build Architecture Tests
+      run: dotnet build tests/DTE.Architecture.Tests -c Release
+    - name: Run Layer Boundaries Validation
+      run: dotnet test tests/DTE.Architecture.Tests -c Release

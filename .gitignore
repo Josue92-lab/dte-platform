@@ -1,0 +1,19 @@
+# IDEs
+.idea/
+.vscode/
+*.user
+*.suo
+# Build results
+[Bb]in/
+[Oo]bj/
+# macOS
+.DS_Store
+# Docker
+.dockerignore
+docker-compose.override.yml
+# Secrets
+appsettings.Development.json
+appsettings.Local.json
+*.pfx
+*.pem
+*.key

@@ -1,0 +1,23 @@
+name: PR Validation
+on:
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        global-json-file: global.json
+    - name: Verify Formatting (.editorconfig)
+      run: dotnet format --verify-no-changes
+    - name: Restore dependencies
+      run: dotnet restore DtePlatform.sln
+    - name: Build (TreatWarningsAsErrors)
+      run: dotnet build DtePlatform.sln --no-restore -c Release
+    - name: Run Architecture Validation
+      run: dotnet test tests/DTE.Architecture.Tests --no-build -c Release
+    - name: Run Full Test Suite
+      run: dotnet test DtePlatform.sln --no-build -c Release

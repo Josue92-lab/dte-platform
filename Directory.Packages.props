@@ -1,0 +1,42 @@
+<Project>
+<PropertyGroup>
+<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+</PropertyGroup>
+<ItemGroup>
+<!-- Application Dependencies -->
+<!-- Justification: Core CQRS implementation for state-mutating commands and queries -->
+<PackageVersion Include="MediatR" Version="12.2.0" />
+<!-- Justification: Pre-execution validation for structural command integrity -->
+<PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+<!-- Infrastructure Dependencies -->
+<!-- Justification: Core persistence engine -->
+<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+<!-- Justification: Core persistence engine design-time tools for migrations -->
+<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4" />
+<!-- Justification: PostgreSQL provider, required for JSONB and BYTEA support -->
+<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+<!-- Justification: Background processing queue backed by PostgreSQL -->
+<PackageVersion Include="Hangfire.PostgreSql" Version="1.20.8" />
+<PackageVersion Include="Hangfire.AspNetCore" Version="1.8.12" />
+<!-- API Dependencies -->
+<!-- Justification: Structured JSON logging to filesystem/stdout -->
+<PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
+<!-- Justification: Stateless JWT authentication handling -->
+<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+<!-- Testing Dependencies -->
+<!-- Justification: xUnit is the industry standard .NET test runner -->
+<PackageVersion Include="xUnit" Version="2.7.0" />
+<PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+<!-- Justification: Explicit, readable assertion syntax -->
+<PackageVersion Include="FluentAssertions" Version="6.12.0" />
+<!-- Justification: Mocking framework for Application Layer isolation -->
+<PackageVersion Include="NSubstitute" Version="5.1.0" />
+<!-- Justification: Architectural boundary enforcement during CI/CD -->
+<PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
+<!-- Justification: Real PostgreSQL instances for physical integration tests -->
+<PackageVersion Include="Testcontainers.PostgreSql" Version="3.8.0" />
+<!-- Justification: In-memory test host for API E2E tests -->
+<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.4" />
+</ItemGroup>
+</Project>

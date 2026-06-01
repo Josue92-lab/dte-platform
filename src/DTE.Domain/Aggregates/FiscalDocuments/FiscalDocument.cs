@@ -26,6 +26,10 @@ public sealed class FiscalDocument : AggregateRoot
 
     public DocumentTotals Totals { get; private set; } = DocumentTotals.Zero;
 
+    public DocumentSignature? Signature { get; private set; }
+    public ReceptionStamp? ReceptionStamp { get; private set; }
+    public RejectionReason? RejectionReason { get; private set; }
+
     private FiscalDocument(
         Guid id,
         DocumentId documentId,
@@ -237,6 +241,82 @@ public sealed class FiscalDocument : AggregateRoot
         }
 
         return result;
+    }
+
+    public ValidationResult MarkAsValidated()
+    {
+        if (Status != FiscalDocumentStatus.Draft)
+        {
+            var result = new ValidationResult();
+            result.AddError(new ValidationError(
+                "FiscalDocument.InvalidStateForValidation",
+                "Document can only be validated from Draft status.",
+                "Status"));
+            return result;
+        }
+
+        var validationResult = Validate();
+
+        if (validationResult.IsValid)
+        {
+            Status = FiscalDocumentStatus.Validated;
+        }
+
+        return validationResult;
+    }
+
+    public Result MarkAsSigned(DocumentSignature signature)
+    {
+        if (Status != FiscalDocumentStatus.Validated)
+        {
+            return Result.Failure(new Error("FiscalDocument.InvalidStateForSigning", "Document can only be signed from Validated status."));
+        }
+
+        if (signature is null)
+        {
+            return Result.Failure(new Error("FiscalDocument.SignatureNull", "Document signature is required."));
+        }
+
+        Signature = signature;
+        Status = FiscalDocumentStatus.Signed;
+
+        return Result.Success();
+    }
+
+    public Result MarkAsProcessed(ReceptionStamp stamp)
+    {
+        if (Status != FiscalDocumentStatus.Signed)
+        {
+            return Result.Failure(new Error("FiscalDocument.InvalidStateForProcessing", "Document can only be processed from Signed status."));
+        }
+
+        if (stamp is null)
+        {
+            return Result.Failure(new Error("FiscalDocument.ReceptionStampNull", "Reception stamp is required."));
+        }
+
+        ReceptionStamp = stamp;
+        Status = FiscalDocumentStatus.Processed;
+
+        return Result.Success();
+    }
+
+    public Result MarkAsRejected(RejectionReason reason)
+    {
+        if (Status != FiscalDocumentStatus.Signed)
+        {
+            return Result.Failure(new Error("FiscalDocument.InvalidStateForRejection", "Document can only be rejected from Signed status."));
+        }
+
+        if (reason is null)
+        {
+            return Result.Failure(new Error("FiscalDocument.RejectionReasonNull", "Rejection reason is required."));
+        }
+
+        RejectionReason = reason;
+        Status = FiscalDocumentStatus.Rejected;
+
+        return Result.Success();
     }
 
     private void ValidateUniversalRules(ValidationResult result)

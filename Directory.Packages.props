@@ -35,7 +35,7 @@
 <!-- Justification: Architectural boundary enforcement during CI/CD -->
 <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
 <!-- Justification: Real PostgreSQL instances for physical integration tests -->
-<PackageVersion Include="Testcontainers.PostgreSql" Version="3.8.0" />
+<PackageVersion Include="Testcontainers.PostgreSql" Version="4.12.0" />
 <!-- Justification: In-memory test host for API E2E tests -->
 <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.4" />
 </ItemGroup>

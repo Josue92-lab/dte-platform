@@ -26,7 +26,7 @@
 <!-- Testing Dependencies -->
 <!-- Justification: xunit is the industry standard .NET test runner -->
 <PackageVersion Include="xunit" Version="2.7.0" />
-<PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+<PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
 <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 <!-- Justification: Explicit, readable assertion syntax -->
 <PackageVersion Include="FluentAssertions" Version="6.12.0" />
